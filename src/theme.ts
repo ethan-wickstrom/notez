@@ -8,7 +8,7 @@ const notezBlue: MantineColorsTuple = [
   '#66c7ff',
   '#40baff',
   '#26b0ff',
-  '#09a9ff', // Primary shade
+  '#09a9ff',
   '#0093e6',
   '#0082cc',
   '#0070b3',

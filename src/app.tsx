@@ -1,40 +1,85 @@
-import { useState } from 'react';
-import { AppShell, Button, Card, Code, Text, Center } from '@mantine/core';
-import { Notifications } from '@mantine/notifications'; // Keep Notifications here as it's part of the layout
+import { AppShell, Burger, Group, Skeleton, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { Notifications } from '@mantine/notifications'; // Keep Notifications accessible globally
 
+// Example: Define a simple type for Note (replace with actual type later)
+type Note = {
+  id: string;
+  title: string;
+  // Add other note properties here
+};
+
+// Main application component
 function App() {
-  const [count, setCount] = useState<number>(0);
+  // State for controlling the mobile navigation drawer
+  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  // State for controlling the desktop navigation visibility (optional, can be always visible)
+  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+
+  // Placeholder for notes state (replace with Context/Reducer later)
+  const notes: Note[] = []; // Example: Initialize with an empty array
 
   return (
     <>
-      {/* Notifications need to be within MantineProvider context, but rendered outside AppShell usually */}
+      {/* Notifications need to be within MantineProvider context */}
       <Notifications />
       <AppShell
-        header={{
-          height: 60,
+        header={{ height: 60 }}
+        navbar={{
+          width: 250, // Adjust width as needed
+          breakpoint: 'sm', // Breakpoint to switch between mobile/desktop views
+          collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
         }}
         padding="md"
       >
-        <AppShell.Header px="md">
-          <Center h="100%" w="max-content">
-            {/* Use Text component for semantic headings if needed, or adjust as per design */}
+        {/* App Header */}
+        <AppShell.Header>
+          <Group h="100%" px="md" justify="space-between">
+            {/* Burger for mobile navigation toggle */}
+            <Burger
+              opened={mobileOpened}
+              onClick={toggleMobile}
+              hiddenFrom="sm" // Hide on screens larger than 'sm'
+              size="sm"
+            />
+            {/* Burger for desktop navigation toggle (optional) */}
+            <Burger
+              opened={desktopOpened}
+              onClick={toggleDesktop}
+              visibleFrom="sm" // Show only on screens 'sm' and larger
+              size="sm"
+            />
             <Text size="xl" fw={700}>
               Notez
             </Text>
-          </Center>
+            {/* Add other header elements like search or user menu here */}
+            <div /> {/* Placeholder to balance justify-content */}
+          </Group>
         </AppShell.Header>
+
+        {/* App Navigation (Sidebar) */}
+        <AppShell.Navbar p="md">
+          <Text mb="md" fw={500}>
+            Notes
+          </Text>
+          {/* Placeholder for Note List - Replace with actual NoteList component */}
+          {notes.length === 0 ? (
+            <Text c="dimmed" size="sm">
+              No notes yet.
+            </Text>
+          ) : (
+            notes.map((note) => (
+              <Skeleton key={note.id} h={28} mt="sm" animate={false} />
+            ))
+          )}
+          {/* Add "New Note" button here */}
+        </AppShell.Navbar>
+
+        {/* Main Content Area */}
         <AppShell.Main>
-          <Card>
-            <Button onClick={() => setCount((currentCount) => currentCount + 1)}>
-              count is {count}
-            </Button>
-            <Text mt="sm">
-              Edit <Code>src/App.tsx</Code> and save to test HMR
-            </Text>
-            <Text mt="xs">
-              Click on the Vite and React logos to learn more
-            </Text>
-          </Card>
+          {/* Placeholder for Note Editor/Viewer */}
+          <Text>Select a note or create a new one.</Text>
+          {/* Example: Render NoteEditor or NoteViewer based on selected note state */}
         </AppShell.Main>
       </AppShell>
     </>

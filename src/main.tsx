@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MantineProvider } from '@mantine/core';
 import App from './App.tsx';
-import { theme } from './theme'; // Import the custom theme
+import { theme } from './theme';
 
 // Import Mantine core styles - should be imported once at the root
 import '@mantine/core/styles.css';

@@ -1,12 +1,11 @@
-You are working on a web-based (Bun, Mantine, and Typescript) Markdown-powered (Github Formatted Markdown) note-taking application with the following specifications:
-- Bun for development: bundling, transpiling, package management, runtime, and more (docs found at https://bun.sh/docs)
-- UI w/ Mantine + CSS modules (docs found at https://mantine.dev/docs for Mantine)
-- IndexedDB for data persistence (docs found at https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
-- `markdown‑wasm` (Markdown parser & HTML renderer implemented in WebAssembly) for Markdown parsing (docs found at https://github.com/rsms/markdown-wasm)
-- Biome formatter, commit hooks via Husky + lint‑staged, Conventional Commits enforced by CI (docs found at https://biomejs.dev/ for Biome, https://typicode.github.io/husky/ for Husky, and https://github.com/lint-staged/lint-staged for lint‑staged)
-- `@hello-pangea/dnd` for drag-and-drop (docs found at https://github.com/hello-pangea/dnd)
+You are working on a web-based (Vite, Mantine, and Typescript) Markdown-powered (Github Formatted Markdown) note-taking application with the following specifications:
+- Vite for development
+- UI w/ Mantine + CSS modules (docs found at [https://mantine.dev/docs](https://mantine.dev/docs) for Mantine)
+- IndexedDB for data persistence (docs found at [https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API))
+- `markdown‑wasm` (Markdown parser & HTML renderer implemented in WebAssembly) for Markdown parsing (docs found at [https://github.com/rsms/markdown-wasm](https://github.com/rsms/markdown-wasm))
+- Biome formatter, commit hooks via Husky + lint‑staged, Conventional Commits enforced by CI (docs found at [https://biomejs.dev/](https://biomejs.dev/) for Biome, [https://typicode.github.io/husky/](https://typicode.github.io/husky/) for Husky, and [https://github.com/lint-staged/lint-staged](https://github.com/lint-staged/lint-staged)for lint‑staged)
+- `@hello-pangea/dnd` for drag-and-drop (docs found at [https://github.com/hello-pangea/dnd](https://github.com/hello-pangea/dnd))
 - Context + Reducer for state management
-
 ## User Experience Guidelines:
 - Display timestamps for creation and last modification
 - Include a clear way to create, edit, and delete notes
@@ -21,7 +20,6 @@ You are working on a web-based (Bun, Mantine, and Typescript) Markdown-powered (
 - Confirm you’re on Mantine 7+ to avoid painful migration later
 - Build as an offline-first PWA w/ a Service Worker (<5 KB sw.js) that caches static assets and queues IndexedDB writes for background sync
 - Include conflict‑resolution rule: “last‑writer‑wins unless title differs, then merge blocks”
-
 ## Mantine UI Dependencies:
 - @mantine/hooks: Hooks for state and UI management
 - @mantine/core: Core components library: inputs, buttons, overlays, etc.
@@ -36,60 +34,9 @@ You are working on a web-based (Bun, Mantine, and Typescript) Markdown-powered (
 - @mantine/spotlight: Overlay command center
 - @mantine/modals: Centralized modals manager
 - @mantine/nprogress: Navigation progress
-
-## Bun's APIs and Bundler (for reference during development):
-- HTTP server (docs found at https://bun.sh/docs/api/http)
-- HTTP client (docs found at https://bun.sh/docs/api/fetch)
-- WebSockets (docs found at https://bun.sh/docs/api/websockets)
-- Workers (docs found at https://bun.sh/docs/api/workers)
-- Binary data (docs found at https://bun.sh/docs/api/binary-data)
-- Streams (docs found at https://bun.sh/docs/api/streams)
-- SQL (docs found at https://bun.sh/docs/api/sql)
-- S3 Object Storage (docs found at https://bun.sh/docs/api/s3)
-- File I/O (docs found at https://bun.sh/docs/api/file-io)
-- Redis client (docs found at https://bun.sh/docs/api/redis)
-- import.meta (docs found at https://bun.sh/docs/api/import-meta)
-- SQLite (docs found at https://bun.sh/docs/api/sqlite)
-- FileSystemRouter (docs found at https://bun.sh/docs/api/file-system-router)
-- TCP sockets (docs found at https://bun.sh/docs/api/tcp)
-- UDP sockets (docs found at https://bun.sh/docs/api/udp)
-- Globals (docs found at https://bun.sh/docs/api/globals)
-- $ Shell (docs found at https://bun.sh/docs/runtime/shell)
-- Child processes (docs found at https://bun.sh/docs/api/spawn)
-- HTMLRewriter (docs found at https://bun.sh/docs/api/html-rewriter)
-- Hashing (docs found at https://bun.sh/docs/api/hashing)
-- Console (docs found at https://bun.sh/docs/api/console)
-- Cookie (docs found at https://bun.sh/docs/api/cookie)
-- FFI (docs found at https://bun.sh/docs/api/ffi)
-- C Compiler (docs found at https://bun.sh/docs/api/cc)
-- Testing (docs found at https://bun.sh/docs/api/test)
-- Utils (docs found at https://bun.sh/docs/api/utils)
-- Node-API (docs found at https://bun.sh/docs/api/node-api)
-- Glob (docs found at https://bun.sh/docs/api/glob)
-- DNS (docs found at https://bun.sh/docs/api/dns)
-- Semver (docs found at https://bun.sh/docs/api/semver)
-- Color (docs found at https://bun.sh/docs/api/color)
-- Transpiler (docs found at https://bun.sh/docs/api/transpiler)
-- Bundler (docs found at https://bun.sh/docs/bundler)
-
-Bun's native bundler converts JavaScript, TypeScript, TSX, JSX, CSS and assorted asset imports into optimized bundles or executables, exposes a JavaScript API (`Bun.build`) and a CLI (`bun build`) and—via `Bun.serve`—powers a full‑stack development server that simultaneously serves HTML routes, hot‑reloaded static assets and API endpoints in one process. It targets browsers, the Bun runtime or Node, supports ES modules, CommonJS and experimental IIFE, and can embed the Bun runtime in a single binary with `--compile`, giving developers an integrated build‑run‑serve workflow.
-
-`Bun.build` accepts an `entrypoints` array and returns a `BuildOutput` containing `BuildArtifact` blobs. Core switches govern output (`outdir`, `outfile`), environment (`target` defaults to browser, `format` defaults to esm, `env` defaults disable), optimisation (`splitting` off, `minify` off except identifier shrinking when `target:"bun"`), diagnostics (`sourcemap` none, `logs` array, `throw` false until 1.2), and code transformation (`define`, `loader`, `banner`, `footer`, `drop`). Asset resolution copies unknown extensions, rewrites paths with `publicPath`, and names files via the `[dir]/[name].[ext]` template or per‑type overrides; hashes appear automatically on chunks and assets. Watch mode (`--watch`) rebuilds on change; bytecode generation accelerates start‑up but only for CommonJS with `target:"bun"`; `external` and `packages` fine‑tune dependency inclusion; plugins extend loaders and transforms across both runtime and bundler through a universal `setup` hook or the `[serve.static]` section of `bunfig.toml`. The CLI mirrors every field with long flags and adds quality‑of‑life toggles such as `--emit-dce-annotations`, `--ignore-dce-annotations`, `--css-chunking`, `--react-fast-refresh`, and cross‑compilation targets for standalone binaries.
-
-In `Bun.serve`, importing HTML files and supplying them in the `routes` map causes Bun to parse `<script>` and `<link>` tags, bundle each referenced module, down‑level CSS, re‑write asset URLs with content hashes, rewrite HTML to a single `<script>` and `<link>`, expose every output as a static route and cache them in memory. `development:true` adds inline sourcemaps, disables minification and rebundles on every request; `development:false` enables HTTP caching headers, in‑memory caching, JavaScript and CSS minification and keeps bundles unchanged until restart. API endpoints share the same `routes` tree and require Bun v1.2.3 or later for method‑specific handlers and hot reloading. Plugins listed in `[serve.static]` are loaded lazily so Tailwind or custom transforms work identically to `Bun.build`.
-
-IMPORTANT DETAILS AND CAVEATS: the bundler performs dead‑code elimination and tree‑shaking automatically but is NOT a replacement for `tsc` type‑checking; comment removal is default and may break userscripts; HTML route bundling, CLI plugin support and IIFE output are WORK IN PROGRESS; bytecode output and executables require `target:"bun"` and compile embeds a full Bun binary, auto‑appending `.exe` on Windows; unknown extensions are always emitted as external assets; environment injection is disabled unless `env` is set to `"inline"` or a `PREFIX_*` pattern; using `target:"bun"` with `format:"cjs"` marks bundles with `// @bun @bun-cjs` which Node cannot run; setting `splitting` true is required for shared‑chunk generation; the watch flag exists even if omitted in some docs; cross‑compile targets like `bun-linux-x64-baseline` control CPU compatibility; Fullstack Dev Server’s HTML pipeline relies on `HTMLRewriter` and will bundle and cache lazily on first request.
-
-NOTE: We will ALWAYS use the latest Bun version. We will NOT use an old version of Bun.
-
 ## Guidelines:
 - Always begin ALL interactions by researching the LATEST documentation for the tools and technologies you're using
-- Never use `npm`, `yarn`, or `pnpm`; always use `bun` instead
-- Never use `npx`; always use `bunx` instead
-- Never use `node`; always use `bun` instead
-- Never use Vite; always use Bun's built-in functionalities instead
 - Always research first things first. Never assume you know something. Your memory is not persistent, your knowledge cutoff
-
 ## Writing Docs:
 - All documentation must live in the `/docs` folder
 - All documentation must be written in Github Flavored Markdown
@@ -106,74 +53,52 @@ NOTE: We will ALWAYS use the latest Bun version. We will NOT use an old version 
 - Keep documentation modular to facilitate efficient updates and maintenance
 - Include code examples with proper syntax highlighting
 - Update documentation whenever related code changes
-
 For each module's `.md` file in the `/docs` directory, use this exact structure as follows:
-
 <DOCUMENTATION_MODULE_TEMPLATE>
 # [Module Name]
-
 ## Overview
 A concise (2-3 sentence) description of the module's purpose and primary functionality.
-
 ## Installation
 Instructions for installing or importing the module, including any dependencies.
-
 ## Core Concepts
 Explanation of the fundamental concepts and design patterns used in this module.
-
 ## API Reference
 Detailed documentation of all public functions, classes, and interfaces:
-
 ### FunctionName(param1, param2)
 Description of what the function does.
-
 Parameters:
 - `param1` (type): Description of parameter
 - `param2` (type): Description of parameter
-
 Returns:
 - (return_type): Description of return value
-
 Example:
 ```typescript
 // Example of how to use the function
 const result: ReturnType = FunctionName('example', 123);
 ```
-
 ### ClassName
 Description of what the class represents and its purpose.
-
 Properties:
 - `propertyName` (type): Description of property
-
 Methods:
 - `methodName(param1, param2)`: Description of method
-
 ## Usage Examples
 Practical examples showing common use cases for this module:
-
 ```typescript
 // Complete, practical example demonstrating the module's functionality
 import { SomeComponent } from './module-name';
-
 // Example implementation
 ```
-
 ## Best Practices
 Guidelines for effectively and efficiently using this module.
-
 ## Troubleshooting
 Common issues and their solutions.
-
 ## Related Modules
 Links to related modules that often work together with this one.
-
 ## Changelog
 Notable changes to this module, with version numbers and dates.
 </DOCUMENTATION_MODULE_TEMPLATE>
-
 This structure provides a comprehensive template that:
-
 1. Starts with a clear overview to immediately communicate the module's purpose
 2. Explains core concepts to help developers understand the module's design philosophy
 3. Documents the API systematically with consistent formatting
@@ -181,13 +106,9 @@ This structure provides a comprehensive template that:
 5. Offers troubleshooting advice for common issues
 6. Connects related modules to show the bigger picture
 7. Tracks changes to help developers understand evolution and breaking changes
-
 Write each section to focus on a specific aspect of the module. This makes the documentation easy to navigate, read, understand, and update.
-
 Use this same exact structure across all module documentation files to create a unified experience that helps developers quickly find the information they need.
-
 ## Code Guidelines
-
 ### General Code Style & Formatting
 - Use English for all code and documentation.
 - Always declare the type of each variable and function (parameters and return value).
@@ -196,38 +117,33 @@ Use this same exact structure across all module documentation files to create a 
 - Use JSDoc to document public classes and methods.
 - Don't leave blank lines within a function.
 - One export per file.
-
 ### Naming Conventions
 - Use PascalCase for classes.
 - Use camelCase for variables, functions, and methods.
 - Use kebab-case for file and directory names.
 - Use UPPERCASE for environment variables.
 - Avoid magic numbers and define constants.
-
 ### Functions & Logic
 - Keep functions short and single-purpose (<20 lines).
 - Avoid deeply nested blocks by:
-  - Using early returns.
-  - Extracting logic into utility functions.
+- Using early returns.
+- Extracting logic into utility functions.
 - Use higher-order functions (map, filter, reduce) to simplify logic.
 - Use arrow functions for simple cases (<3 instructions), named functions otherwise.
 - Use default parameter values instead of null/undefined checks.
 - Use RO-RO (Receive Object, Return Object) for passing and returning multiple parameters.
-
 ### Data Handling
 - Avoid excessive use of primitive types; encapsulate data in composite types.
 - Avoid placing validation inside functions—use classes with internal validation instead.
 - Prefer immutability for data:
-  - Use readonly for immutable properties.
-  - Use as const for literals that never change.
-
+- Use readonly for immutable properties.
+- Use as const for literals that never change.
 ## Research‑First Policy
 - Search before you speak. Assume every prompt may reference events, docs, libraries, or code after your training cut‑off; run an external search *before* composing an answer.
 - Verify with ≥ 2 authoritative sources. Cross‑check results—prefer primary docs, peer‑reviewed papers, official statements, or first‑party APIs.
 - No fabrication. Do not invent facts, citations, statistics, or dates under any circumstance.
 - Stateless mindset. Assume no persistent memory outside this session; never claim long‑term recall of prior conversations.
 - Always research the latest version of the tools and technologies you're using.
-
 ## Deliverables per Every Change, Interaction, or Action/Message:
 - Working application code FOR EVERY CHANGE
 - Intensive developer-focused `.md` documentation in the `/docs` folder FOR EVERY CHANGE

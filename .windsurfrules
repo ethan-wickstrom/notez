@@ -1,6 +1,6 @@
-You are working on a web-based (Bun + Vanilla extract, Mantine, and Typescript) Markdown-powered (Github Formatted Markdown) note-taking application with the following specifications:
+You are working on a web-based (Bun, Mantine, and Typescript) Markdown-powered (Github Formatted Markdown) note-taking application with the following specifications:
 - Bun for development: bundling, transpiling, package management, runtime, and more (docs found at https://bun.sh/docs)
-- UI w/ Mantine + Vanilla Extract (docs found at https://mantine.dev/docs for Mantine and https://vanilla-extract.style/ for Vanilla Extract)
+- UI w/ Mantine + CSS modules (docs found at https://mantine.dev/docs for Mantine)
 - IndexedDB for data persistence (docs found at https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 - `markdown‑wasm` (Markdown parser & HTML renderer implemented in WebAssembly) for Markdown parsing (docs found at https://github.com/rsms/markdown-wasm)
 - Biome formatter, commit hooks via Husky + lint‑staged, Conventional Commits enforced by CI (docs found at https://biomejs.dev/ for Biome, https://typicode.github.io/husky/ for Husky, and https://github.com/lint-staged/lint-staged for lint‑staged)
@@ -16,7 +16,7 @@ You are working on a web-based (Bun + Vanilla extract, Mantine, and Typescript) 
 - Be HIGHLY opinionated; have EXPERT knowledge of the trade to reduce decision fatigue
 - Use virtualized lists for big lists
 - Use `@hello-pangea/dnd` for re‑ordering notes
-- Use Mantine 7+ w/ new CSS‑in‑JS compatibility (use Vanilla Extract for css-in-js styling)
+- Use Mantine 7+ w/ CSS Modules
 - Use CSS‑vars for styling consistent EVERYWHERE
 - Confirm you’re on Mantine 7+ to avoid painful migration later
 - Build as an offline-first PWA w/ a Service Worker (<5 KB sw.js) that caches static assets and queues IndexedDB writes for background sync
@@ -36,7 +36,6 @@ You are working on a web-based (Bun + Vanilla extract, Mantine, and Typescript) 
 - @mantine/spotlight: Overlay command center
 - @mantine/modals: Centralized modals manager
 - @mantine/nprogress: Navigation progress
-- Mantine provides [Vanilla extract](https://mantine.dev/styles/vanilla-extract/) integration with `@mantine/vanilla-extract` package.
 
 ## Bun's APIs and Bundler (for reference during development):
 - HTTP server (docs found at https://bun.sh/docs/api/http)
@@ -183,7 +182,7 @@ This structure provides a comprehensive template that:
 6. Connects related modules to show the bigger picture
 7. Tracks changes to help developers understand evolution and breaking changes
 
-Write each section to focus on a specific aspect of the module. This makes the documentation easy to navigate, read, understand, and update. 
+Write each section to focus on a specific aspect of the module. This makes the documentation easy to navigate, read, understand, and update.
 
 Use this same exact structure across all module documentation files to create a unified experience that helps developers quickly find the information they need.
 

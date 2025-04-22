@@ -36,6 +36,7 @@ You are working on a web-based (Bun + Vanilla extract, Mantine, and Typescript) 
 - @mantine/spotlight: Overlay command center
 - @mantine/modals: Centralized modals manager
 - @mantine/nprogress: Navigation progress
+- Mantine provides [Vanilla extract](https://mantine.dev/styles/vanilla-extract/) integration with `@mantine/vanilla-extract` package.
 
 ## Bun's APIs and Bundler (for reference during development):
 - HTTP server (docs found at https://bun.sh/docs/api/http)

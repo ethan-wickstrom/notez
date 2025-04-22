@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { MantineProvider } from '@mantine/core';
 import App from './App.tsx';
 import { theme } from './theme';
+import { AppProvider } from './state/app-provider'; // Import the AppProvider
 
 // Import Mantine core styles - should be imported once at the root
 import '@mantine/core/styles.css';
@@ -20,7 +21,9 @@ const root = createRoot(rootElement);
 root.render(
   <StrictMode>
     <MantineProvider theme={theme} defaultColorScheme="dark">
-      <App />
+      <AppProvider> {/* Wrap App with AppProvider */}
+        <App />
+      </AppProvider>
     </MantineProvider>
   </StrictMode>,
 );

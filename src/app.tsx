@@ -1,13 +1,7 @@
 import { AppShell, Burger, Group, Skeleton, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Notifications } from '@mantine/notifications'; // Keep Notifications accessible globally
-
-// Example: Define a simple type for Note (replace with actual type later)
-type Note = {
-  id: string;
-  title: string;
-  // Add other note properties here
-};
+import { useAppContext } from './state/app-context'; // Import the context hook
 
 // Main application component
 function App() {
@@ -16,8 +10,9 @@ function App() {
   // State for controlling the desktop navigation visibility (optional, can be always visible)
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
-  // Placeholder for notes state (replace with Context/Reducer later)
-  const notes: Note[] = []; // Example: Initialize with an empty array
+  // Access state and dispatch from the context
+  const { state } = useAppContext();
+  const { notes, isLoading } = state; // Destructure notes and loading state
 
   return (
     <>
@@ -63,12 +58,21 @@ function App() {
             Notes
           </Text>
           {/* Placeholder for Note List - Replace with actual NoteList component */}
-          {notes.length === 0 ? (
+          {isLoading ? (
+            // Show skeletons while loading
+            <>
+              <Skeleton h={28} mt="sm" animate />
+              <Skeleton h={28} mt="sm" animate />
+              <Skeleton h={28} mt="sm" animate />
+            </>
+          ) : notes.length === 0 ? (
             <Text c="dimmed" size="sm">
               No notes yet.
             </Text>
           ) : (
+            // Render actual notes list (placeholder for now)
             notes.map((note) => (
+              // Replace Skeleton with actual NoteListItem component later
               <Skeleton key={note.id} h={28} mt="sm" animate={false} />
             ))
           )}

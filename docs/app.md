@@ -14,7 +14,7 @@ This component is part of the core application structure and does not require se
 -   **Responsive Navigation**: Implements toggles (`Burger` components) for showing/hiding the navbar on both mobile and desktop viewports using the `useDisclosure` hook from `@mantine/hooks`.
 -   **Global Notifications**: Renders the `Notifications` component from `@mantine/notifications` to enable system-wide notifications.
 -   **Placeholder Structure**: Includes placeholder sections within the `AppShell.Navbar` and `AppShell.Main` to indicate where the note list and note editor/viewer components will reside.
--   **State Management (Future)**: Designed to integrate with a state management solution (like Context + Reducer) for handling notes data and UI state (e.g., selected note). The current implementation uses placeholder data.
+-   **State Management**: Integrates with the application's state management solution (`AppContext` + `useReducer`) provided by `AppProvider`. It consumes the global state (notes, loading status) using the `useAppContext` hook.
 
 ## API Reference
 
@@ -47,10 +47,13 @@ root.render(
 import { AppShell, Burger, Group, Skeleton, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Notifications } from '@mantine/notifications';
+import { useAppContext } from './state/app-context'; // Import context hook
 
 function App() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const { state } = useAppContext(); // Consume context
+  const { notes, isLoading } = state;
 
   return (
     <>
@@ -98,12 +101,15 @@ export default App;
 
 ## Related Modules
 
--   `src/main.tsx`: Initializes the React app and renders the `App` component within `MantineProvider`.
+-   `src/main.tsx`: Initializes the React app and renders the `App` component within `MantineProvider` and `AppProvider`.
 -   `src/theme.ts`: Provides the theme configuration used by `MantineProvider`.
+-   `src/state/app-context.ts`: Provides the `useAppContext` hook used to access global state.
+-   `src/state/app-provider.tsx`: The component that provides the application context.
 -   `@mantine/core/AppShell`: The core layout component used.
 -   `@mantine/hooks/useDisclosure`: Hook used for managing toggle states.
 -   `@mantine/notifications`: Provides the `Notifications` component.
 
 ## Changelog
 
--   **2025-04-22**: Initial refactoring. Replaced placeholder content with a structured `AppShell` layout including Header, Navbar, and Main sections. Added responsive navigation toggles. Integrated `Notifications`.
+-   **2025-04-22**: Integrated `useAppContext` to consume global state (notes, isLoading). Removed placeholder notes array. Updated Navbar to show loading skeletons.
+-   **Previous**: Initial refactoring. Replaced placeholder content with a structured `AppShell` layout including Header, Navbar, and Main sections. Added responsive navigation toggles. Integrated `Notifications`.

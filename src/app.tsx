@@ -1,7 +1,7 @@
-import { AppShell, Burger, Group, Skeleton, Text } from '@mantine/core';
+import { AppShell, Burger, Group, Text, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Notifications } from '@mantine/notifications'; // Keep Notifications accessible globally
-import { useAppContext } from './state/app-context'; // Import the context hook
+import { NoteList } from './components/note-list'; // Import the NoteList component
 
 // Main application component
 function App() {
@@ -10,9 +10,9 @@ function App() {
   // State for controlling the desktop navigation visibility (optional, can be always visible)
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
-  // Access state and dispatch from the context
-  const { state } = useAppContext();
-  const { notes, isLoading } = state; // Destructure notes and loading state
+  // No need to access state directly here anymore, NoteList handles it
+  // const { state } = useAppContext();
+  // const { notes, isLoading } = state;
 
   return (
     <>
@@ -36,6 +36,7 @@ function App() {
               onClick={toggleMobile}
               hiddenFrom="sm" // Hide on screens larger than 'sm'
               size="sm"
+              aria-label="Toggle navigation"
             />
             {/* Burger for desktop navigation toggle (optional) */}
             <Burger
@@ -43,6 +44,7 @@ function App() {
               onClick={toggleDesktop}
               visibleFrom="sm" // Show only on screens 'sm' and larger
               size="sm"
+              aria-label="Toggle navigation"
             />
             <Text size="xl" fw={700}>
               Notez
@@ -54,29 +56,11 @@ function App() {
 
         {/* App Navigation (Sidebar) */}
         <AppShell.Navbar p="md">
-          <Text mb="md" fw={500}>
-            Notes
-          </Text>
-          {/* Placeholder for Note List - Replace with actual NoteList component */}
-          {isLoading ? (
-            // Show skeletons while loading
-            <>
-              <Skeleton h={28} mt="sm" animate />
-              <Skeleton h={28} mt="sm" animate />
-              <Skeleton h={28} mt="sm" animate />
-            </>
-          ) : notes.length === 0 ? (
-            <Text c="dimmed" size="sm">
-              No notes yet.
-            </Text>
-          ) : (
-            // Render actual notes list (placeholder for now)
-            notes.map((note) => (
-              // Replace Skeleton with actual NoteListItem component later
-              <Skeleton key={note.id} h={28} mt="sm" animate={false} />
-            ))
-          )}
-          {/* Add "New Note" button here */}
+          {/* Render the NoteList component */}
+          <AppShell.Section grow component={ScrollArea}>
+            <NoteList />
+          </AppShell.Section>
+          {/* Add "New Note" button here later */}
         </AppShell.Navbar>
 
         {/* Main Content Area */}

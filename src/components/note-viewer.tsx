@@ -10,7 +10,10 @@ import { notifications } from '@mantine/notifications';
 import type { Note } from '../types';
 import { useAppContext } from '../state/app-context';
 import type { JSX } from 'react';
-import * as Markdown from 'markdown-wasm/dist/markdown.es';
+import { init, mdToHtml } from 'md4w';
+
+// Import the WASM file URL using a relative path
+import wasmUrl from '../../node_modules/md4w/js/md4w-fast.wasm?url';
 
 /**
  * Displays the content of the selected note, parsing Markdown to HTML.
@@ -19,66 +22,67 @@ export function NoteViewer(): JSX.Element {
   const { state } = useAppContext();
   const { notes, selectedNoteId } = state;
   const [htmlContent, setHtmlContent] = useState<string>('');
-  const [isLoadingParser, setIsLoadingParser] = useState<boolean>(true);
-  const [isParsing, setIsParsing] = useState<boolean>(false);
-  const [parserLoaded, setParserLoaded] = useState<boolean>(false);
+  // State to track if md4w WASM is initializing
+  const [isInitializing, setIsInitializing] = useState<boolean>(true);
 
   const selectedNote: Note | undefined = notes.find(
     (note) => note.id === selectedNoteId,
   );
 
-  // Initialize markdown-wasm parser on mount
+  // Initialize md4w parser on mount
   useEffect(() => {
     let isMounted = true;
     (async () => {
       try {
-        // Wait for the WASM parser to be ready
-        await Markdown.ready;
+        // Initialize md4w with the explicitly imported WASM file URL
+        await init(wasmUrl);
         if (isMounted) {
-          setParserLoaded(true);
+          setIsInitializing(false); // Initialization complete
         }
       } catch (error: unknown) {
-        console.error('Failed to load markdown parser:', error);
+        console.error('Failed to initialize md4w parser:', error);
         if (isMounted) {
+          setIsInitializing(false); // Still set to false on error
           notifications.show({
             title: 'Error',
-            message: 'Failed to load markdown parser',
+            message: 'Failed to initialize Markdown parser.',
             color: 'red',
           });
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoadingParser(false);
         }
       }
     })();
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, []); // Run only once on mount
 
-  // Parse markdown when selected note changes or parser is ready
+  // Parse markdown when selected note changes and parser is initialized
   useEffect(() => {
-    if (selectedNote && parserLoaded && !isLoadingParser) {
-      setIsParsing(true);
+    // Only parse if initialization is done and a note is selected
+    if (!isInitializing && selectedNote) {
       try {
-        const html: string = Markdown.parse(selectedNote.content);
+        // mdToHtml is synchronous after init()
+        const html: string = mdToHtml(selectedNote.content, {
+          // Add desired parse flags here if needed, e.g., GFM features
+          parseFlags: [
+            'DEFAULT', // Includes TABLES, TASKLISTS, STRIKETHROUGH etc.
+            'PERMISSIVE_URL_AUTO_LINKS',
+          ],
+        });
         setHtmlContent(html);
       } catch (error: unknown) {
         console.error('Failed to parse markdown:', error);
         setHtmlContent('<p>Error parsing Markdown content.</p>');
         notifications.show({
           title: 'Error',
-          message: 'Failed to parse markdown',
+          message: 'Failed to parse Markdown content.',
           color: 'red',
         });
-      } finally {
-        setIsParsing(false);
       }
     } else if (!selectedNote) {
       setHtmlContent(''); // Clear content if no note is selected
     }
-  }, [selectedNote, parserLoaded, isLoadingParser]);
+  }, [selectedNote, isInitializing]); // Depend on note selection and initialization state
 
   if (!selectedNoteId || !selectedNote) {
     return (
@@ -88,7 +92,8 @@ export function NoteViewer(): JSX.Element {
     );
   }
 
-  const isContentLoading: boolean = isLoadingParser || isParsing;
+  // Content is loading only during the initial WASM load
+  const isContentLoading: boolean = isInitializing;
 
   return (
     <Box pos="relative" p="md">

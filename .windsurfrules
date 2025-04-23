@@ -2,7 +2,7 @@ You are working on a web-based (Vite, Mantine, and Typescript) Markdown-powered 
 - Vite for development
 - UI w/ Mantine + CSS modules (docs found at [https://mantine.dev/docs](https://mantine.dev/docs) for Mantine)
 - IndexedDB for data persistence (docs found at [https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API))
-- `markdown‑wasm` (Markdown parser & HTML renderer implemented in WebAssembly) for Markdown parsing (docs found at [https://github.com/rsms/markdown-wasm](https://github.com/rsms/markdown-wasm))
+- `md4w` (Markdown parser & HTML renderer implemented in Zig & C, compiled to WebAssembly) for Markdown parsing (docs found at [https://github.com/ije/md4w/blob/main/README.md](https://github.com/ije/md4w/blob/main/README.md))
 - Biome formatter, commit hooks via Husky + lint‑staged, Conventional Commits enforced by CI (docs found at [https://biomejs.dev/](https://biomejs.dev/) for Biome, [https://typicode.github.io/husky/](https://typicode.github.io/husky/) for Husky, and [https://github.com/lint-staged/lint-staged](https://github.com/lint-staged/lint-staged)for lint‑staged)
 - `@hello-pangea/dnd` for drag-and-drop (docs found at [https://github.com/hello-pangea/dnd](https://github.com/hello-pangea/dnd))
 - Automated changelog generation w/ `@changesets/cli` (docs found at [https://github.com/changesets/changesets](https://github.com/changesets/changesets)); `.changeset/README.md` contains information about using changesets; `.changeset/config.json` is our default config

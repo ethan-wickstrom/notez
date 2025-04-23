@@ -69,7 +69,7 @@ export function AppProvider({ children }) {
 
 -   **`SET_NOTES`**: Replaces the `notes` array entirely. Sets `isLoading` to `false` and clears `error`.
 -   **`ADD_NOTE`**: Prepends the new note to the `notes` array.
--   **`UPDATE_NOTE`**: Maps over the `notes` array, finds the note by `id`, and merges the `action.payload.data` into it, creating a new note object.
+-   **`UPDATE_NOTE`**: Maps over the `notes` array, finds the note by `id`, merges the `action.payload.data` into it, and **automatically updates the `updatedAt` timestamp** to the current time, creating a new note object.
 -   **`DELETE_NOTE`**: Filters the `notes` array to exclude the note with the specified `id`. Also resets `selectedNoteId` if the deleted note was selected.
 -   **`SELECT_NOTE`**: Updates `selectedNoteId` with the provided `id` or `null`.
 -   **`SET_LOADING`**: Updates the `isLoading` flag.

@@ -36,16 +36,18 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         notes: [action.payload, ...state.notes],
       };
 
-    case 'UPDATE_NOTE':
-      // Find the note by ID and update its properties.
+    case 'UPDATE_NOTE': {
+      // Find the note by ID and update its properties, including updatedAt.
+      const now = new Date().toISOString();
       return {
         ...state,
         notes: state.notes.map((note) =>
           note.id === action.payload.id
-            ? { ...note, ...action.payload.data }
+            ? { ...note, ...action.payload.data, updatedAt: now } // Always update timestamp
             : note,
         ),
       };
+    }
 
     case 'DELETE_NOTE':
       // Filter out the note with the specified ID.

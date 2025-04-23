@@ -65,8 +65,10 @@ export function NoteViewer(): JSX.Element {
         const html: string = mdToHtml(selectedNote.content, {
           // Add desired parse flags here if needed, e.g., GFM features
           parseFlags: [
-            'DEFAULT', // Includes TABLES, TASKLISTS, STRIKETHROUGH etc.
-            'PERMISSIVE_URL_AUTO_LINKS',
+            'DEFAULT',
+            "COLLAPSE_WHITESPACE",
+            "LATEX_MATH_SPANS",
+            "NO_HTML"
           ],
         });
         setHtmlContent(html);

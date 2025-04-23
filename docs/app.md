@@ -14,7 +14,7 @@ This component is part of the core application structure and does not require se
 -   **Responsive Navigation**: Implements toggles (`Burger` components) for showing/hiding the navbar on both mobile and desktop viewports using the `useDisclosure` hook from `@mantine/hooks`.
 -   **Global Notifications**: Renders the `Notifications` component from `@mantine/notifications` to enable system-wide notifications.
 -   **Note List Integration**: Renders the `NoteList` component within the `AppShell.Navbar` to display the user's notes.
--   **Note Viewer Integration**: Renders the `NoteViewer` component within `AppShell.Main` to display the content of the selected note.
+-   **Note Editor Integration**: Renders the `NoteEditor` component within `AppShell.Main` to edit the content of the selected note.
 -   **State Management**: Relies on the `AppProvider` higher up to provide the context needed by its children like `NoteList` and `NoteViewer`.
 
 ## API Reference

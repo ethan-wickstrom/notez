@@ -14,6 +14,7 @@ This module is part of the core application structure and does not require separ
 -   **Strict Mode**: Wraps the application in `React.StrictMode` to highlight potential problems during development.
 -   **Mantine Provider**: Wraps the entire application with `MantineProvider` from `@mantine/core`. This provides the theme context (including CSS variables and color scheme management) to all descendant components.
 -   **App Provider**: Wraps the `App` component with `AppProvider` from `src/state/app-provider.tsx` to provide global application state (notes, selection, etc.) via context.
+-   **Modals Provider**: Wraps the `AppProvider` with `ModalsProvider` from `@mantine/modals` to enable the modals manager system used for confirmations, etc.
 -   **Theme Configuration**: Imports a custom theme configuration from `src/theme.ts` and applies it globally via `MantineProvider`.
 -   **Default Color Scheme**: Sets the `defaultColorScheme` prop on `MantineProvider` to `'dark'`, enforcing the dark theme requirement.
 -   **Global Styles**: Imports necessary global CSS files (`@mantine/core/styles.css`, `@mantine/notifications/styles.css`) required for Mantine components to function correctly. These styles are imported here to ensure they are loaded before any application components.
@@ -50,10 +51,13 @@ const root = createRoot(rootElement);
 root.render(
   <StrictMode>
     <MantineProvider theme={theme} defaultColorScheme="dark">
-      {/* AppProvider provides global state */}
-      <AppProvider>
-        <App /> {/* Render the main App layout */}
-      </AppProvider>
+      {/* ModalsProvider enables confirmation dialogs etc. */}
+      <ModalsProvider>
+        {/* AppProvider provides global state */}
+        <AppProvider>
+          <App /> {/* Render the main App layout */}
+        </AppProvider>
+      </ModalsProvider>
     </MantineProvider>
   </StrictMode>,
 );
@@ -78,6 +82,7 @@ root.render(
 -   `src/App.tsx`: The root component containing the application's layout structure (`AppShell`).
 -   `src/theme.ts`: Contains the Mantine theme configuration.
 -   `src/state/app-provider.tsx`: The provider component that wraps `App` to supply global state.
+-   `@mantine/modals`: Provides the `ModalsProvider` for modal management.
 -   `index.html`: The main HTML file where the React application is mounted and the initial color scheme script resides.
 
 ## Changelog

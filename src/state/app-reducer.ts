@@ -8,6 +8,7 @@ export const initialState: AppState = {
   selectedNoteId: null,
   isLoading: true, // Assume loading initially until data is fetched
   error: null,
+  searchQuery: '', // Initialize with empty search query
 };
 
 /**
@@ -74,7 +75,6 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         ...state,
         isLoading: action.payload,
       };
-
     case 'SET_ERROR':
       // Set or clear the error message.
       return {
@@ -82,10 +82,16 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         error: action.payload,
         isLoading: false, // Assume loading stops if an error occurs
       };
-
+    case 'SET_SEARCH_QUERY':
+      // Update the search query for filtering notes
+      return {
+        ...state,
+        searchQuery: action.payload,
+      };
     default:
       // For unhandled actions, return the current state unchanged.
       // This satisfies TypeScript's exhaustiveness check if AppAction is a discriminated union.
+      return state;
       return state;
   }
 }

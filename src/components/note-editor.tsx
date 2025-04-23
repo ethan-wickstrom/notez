@@ -9,6 +9,7 @@
  * conditionally, ensuring hooks run unconditionally.
  */
 import {
+  Badge,
   Box,
   Button,
   Group,
@@ -42,6 +43,7 @@ import {
 } from 'react';
 import { useAppContext } from '../state/app-context';
 import type { Note } from '../types';
+import { useHotkeys } from '@mantine/hooks';
 
 // Create lowlight instance and register languages
 const lowlight = createLowlight();
@@ -103,6 +105,32 @@ type NoteEditorInnerProps = {
 function NoteEditorInner({ note }: NoteEditorInnerProps): JSX.Element {
   const { dispatch } = useAppContext();
   const [title, setTitle] = useState<string>(note.title);
+  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'idle'>('idle');
+
+  // Add timer to clear save status after a delay
+  useEffect(() => {
+    let timer: number;
+    if (saveStatus === 'saved') {
+      timer = window.setTimeout(() => {
+        setSaveStatus('idle');
+      }, 2000);
+    }
+    return () => window.clearTimeout(timer);
+  }, [saveStatus]);
+
+  // Add keyboard shortcuts for saving
+  useHotkeys([
+    ['mod+s', (event) => {
+      event.preventDefault();
+
+      // Show save notification
+      notifications.show({
+        title: 'Note saved',
+        message: 'All changes have been saved',
+        color: 'green',
+      });
+    }],
+  ]);
 
   // --- Title State Synchronization & Debounced Save ---
   useEffect(() => {
@@ -114,10 +142,13 @@ function NoteEditorInner({ note }: NoteEditorInnerProps): JSX.Element {
     () => {
       // Only dispatch update if the title has actually changed
       if (title !== note.title) {
+        setSaveStatus('saving');
         dispatch({
           type: 'UPDATE_NOTE',
           payload: { id: note.id, data: { title } },
         });
+        // Set to saved after a brief delay
+        setTimeout(() => setSaveStatus('saved'), 300);
       }
     },
     [title, note.id, note.title, dispatch], // Include note.title and dispatch
@@ -165,14 +196,17 @@ function NoteEditorInner({ note }: NoteEditorInnerProps): JSX.Element {
       contentTimeout.current = window.setTimeout(() => {
         // Only dispatch if content actually changed from the persisted state
         if (html !== note.content) {
+          setSaveStatus('saving');
           dispatch({
             type: 'UPDATE_NOTE',
             payload: { id: note.id, data: { content: html } },
           });
+          // Set to saved after a brief delay
+          setTimeout(() => setSaveStatus('saved'), 300);
         }
       }, DEBOUNCE_MS);
     },
-    [dispatch, note.id, note.content], // Include note.content
+    [dispatch, note.id, note.content, setSaveStatus], // Include note.content and setSaveStatus
   );
 
   // --- Delete Action with Confirmation ---
@@ -270,7 +304,7 @@ function NoteEditorInner({ note }: NoteEditorInnerProps): JSX.Element {
         />
       </RichTextEditor>
 
-      {/* Timestamps */}
+      {/* Timestamps and save status */}
       <Group justify="flex-end" gap="sm" mt="xs"> {/* Reduced margin-top */}
         <Text size="xs" c="dimmed">
           Created: {new Date(note.createdAt).toLocaleString()}
@@ -278,6 +312,20 @@ function NoteEditorInner({ note }: NoteEditorInnerProps): JSX.Element {
         <Text size="xs" c="dimmed">
           Updated: {new Date(note.updatedAt).toLocaleString()}
         </Text>
+
+        {/* Save status indicator */}
+        {saveStatus !== 'idle' && (
+          <Badge
+            color={saveStatus === 'saving' ? 'yellow' : 'green'}
+            variant="light"
+            size="sm"
+          >
+            {saveStatus === 'saving' ? 'Saving...' : 'Saved'}
+          </Badge>
+        )}
+
+        {/* Keyboard shortcut hint */}
+        <Text size="xs" c="dimmed">⌘S to save</Text>
       </Group>
     </Stack>
   );

@@ -60,26 +60,78 @@ The `theme` object is passed to the `MantineProvider` in `src/main.tsx`. Compone
 // src/theme.ts
 import { createTheme, MantineColorsTuple } from '@mantine/core';
 
+// Enhanced blue color palette with improved contrast
 const notezBlue: MantineColorsTuple = [
-  '#e0f7ff', '#ccedff', '#99daff', '#66c7ff', '#40baff',
-  '#26b0ff', '#09a9ff', '#0093e6', '#0082cc', '#0070b3',
+  '#e6f7ff', '#ccedff', '#99daff', '#66c7ff', '#40baff',
+  '#26b0ff', '#09a9ff', '#1a90ff', '#0082cc', '#006bb3',
+];
+
+// Rich purple accent for highlights
+const notezPurple: MantineColorsTuple = [
+  '#f5e8ff', '#e5d1ff', '#d2b0ff', '#bc8aff', '#a66cff',
+  '#9955ff', '#8c3eff', '#7a28ff', '#6600ff', '#5500d4',
+];
+
+// Subtle gray palette for backgrounds and borders
+const notezGray: MantineColorsTuple = [
+  '#f9f9fb', '#f0f0f5', '#e6e6ef', '#dbdbe8', '#c4c4d5',
+  '#acacc0', '#8d8da8', '#73738c', '#55556d', '#2a2a3c',
 ];
 
 export const theme = createTheme({
   colors: {
     notezBlue,
+    notezPurple,
+    notezGray,
   },
   primaryColor: 'notezBlue',
   primaryShade: 7, // Optimized for dark theme
+  defaultRadius: 'sm',
+  
+  components: {
+    Button: {
+      defaultProps: {
+        tt: 'capitalize',
+      },
+      styles: (theme) => ({
+        root: {
+          transition: 'all 150ms ease',
+        },
+      }),
+    },
+    // ...other component overrides
+  },
 });
 
 // src/components/some-component.tsx
-import { Button, useMantineTheme } from '@mantine/core';
+import { Button, NavLink, Badge, useMantineTheme } from '@mantine/core';
 
 function SomeComponent() {
   const currentTheme = useMantineTheme(); // Access the merged theme
-
+  
   return (
+    <>
+      {/* Button uses theme.primaryColor ('notezBlue') and theme.primaryShade (7) by default */}
+      <Button>Primary Action</Button>
+      
+      {/* NavLink inherits the 'subtle' variant from theme */}
+      <NavLink label="Navigation Item" />
+      
+      {/* Use accent color for important UI elements */}
+      <Badge color="notezPurple">New</Badge>
+      
+      {/* Access theme properties programmatically */}
+      <div style={{
+        backgroundColor: currentTheme.colors.notezGray[8],
+        padding: currentTheme.spacing.md,
+        borderRadius: currentTheme.radius.sm
+      }}>
+        Themed container
+      </div>
+    </>
+  );
+}
+```
     // Button uses theme.primaryColor ('notezBlue') and theme.primaryShade (7) by default
     <Button>Primary Action</Button>
   );

@@ -1,17 +1,43 @@
-import { AppShell, Burger, Group, Text, ScrollArea } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { AppShell, Burger, Group, Text, ScrollArea, TextInput } from '@mantine/core';
+import { useDisclosure, useHotkeys } from '@mantine/hooks';
 import { Notifications } from '@mantine/notifications'; // Keep Notifications accessible globally
 import { NoteList } from './components/note-list'; // Import the NoteList component
 import { NoteEditor } from './components/note-editor'; // Import the NoteEditor component
 import { NewNoteButton } from './components/new-note-button'; // Import the NewNoteButton component
-import type { JSX } from 'react'; // Import JSX type
+import { useAppContext } from './state/app-context'; // Import useAppContext for search functionality
+import type { JSX, ChangeEvent } from 'react'; // Import JSX type
 
 // Main application component
 function App(): JSX.Element {
+  // Get state and dispatch from context
+  const { state, dispatch } = useAppContext();
   // State for controlling the mobile navigation drawer
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   // State for controlling the desktop navigation visibility
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+
+  // Handle search input changes
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    dispatch({ type: 'SET_SEARCH_QUERY', payload: event.currentTarget.value });
+  };
+
+  // Setup keyboard shortcuts
+  useHotkeys([
+    // Focus search box with Cmd/Ctrl+F
+    ['mod+f', (event) => {
+      event.preventDefault();
+      const searchInput = document.querySelector('input[placeholder="Search notes..."]') as HTMLInputElement;
+      if (searchInput) {
+        searchInput.focus();
+      }
+    }],
+    // Clear search with Escape if search box is focused
+    ['escape', () => {
+      if (state.searchQuery && document.activeElement?.tagName === 'INPUT') {
+        dispatch({ type: 'SET_SEARCH_QUERY', payload: '' });
+      }
+    }],
+  ]);
 
   return (
     <>
@@ -28,7 +54,7 @@ function App(): JSX.Element {
       >
         {/* App Header */}
         <AppShell.Header>
-          <Group h="100%" px="md" justify="space-between">
+          <Group h="100%" px="md" gap="sm">
             {/* Burger for mobile navigation toggle */}
             <Burger
               opened={mobileOpened}
@@ -48,8 +74,25 @@ function App(): JSX.Element {
             <Text size="xl" fw={700}>
               Notez
             </Text>
-            {/* Empty div for spacing, ensuring title is centered */}
-            <div style={{ width: 'var(--Burger-size, rem(30px))' }} />
+            {/* Search input, taking remaining space */}
+            <TextInput
+              placeholder="Search notes..."
+              value={state.searchQuery}
+              onChange={handleSearchChange}
+              style={{ flex: 1 }}
+              rightSection={state.searchQuery ? (
+                <Text
+                  size="xs"
+                  c="dimmed"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => dispatch({ type: 'SET_SEARCH_QUERY', payload: '' })}
+                >
+                  ESC
+                </Text>
+              ) : (
+                <Text size="xs" c="dimmed">⌘F</Text>
+              )}
+            />
           </Group>
         </AppShell.Header>
 

@@ -8,23 +8,25 @@ export type AppState = {
    * An array holding all the notes currently loaded in the application.
    */
   notes: Note[];
-
   /**
    * The ID of the currently selected note for viewing or editing.
    * `null` if no note is selected.
    */
   selectedNoteId: string | null;
-
   /**
    * Indicates if the application is currently loading notes from storage.
    */
   isLoading: boolean;
-
   /**
    * Stores any error that occurred during data loading or saving.
    * `null` if there is no error.
    */
   error: string | null;
+  /**
+   * Current search query for filtering notes.
+   * Empty string when not searching.
+   */
+  searchQuery: string;
 };
 
 /**
@@ -38,4 +40,5 @@ export type AppAction =
   | { type: 'DELETE_NOTE'; payload: string } // Delete a note by its ID
   | { type: 'SELECT_NOTE'; payload: string | null } // Set the currently selected note ID
   | { type: 'SET_LOADING'; payload: boolean } // Set the loading state
-  | { type: 'SET_ERROR'; payload: string | null }; // Set or clear the error state
+  | { type: 'SET_ERROR'; payload: string | null } // Set or clear the error state
+  | { type: 'SET_SEARCH_QUERY'; payload: string }; // Set the current search query

@@ -17,7 +17,8 @@ import { NoteEditor } from './components/note-editor';
 
 -   **Rich Text Editing**: Utilizes `@mantine/tiptap`'s `RichTextEditor` for a WYSIWYG editing experience, powered by Tiptap.
 -   **Comprehensive Toolbar**: Includes controls for common formatting (bold, italic, underline, strikethrough, code), headings (H1-H4), lists (bullet, ordered), blockquotes, code blocks, horizontal rules, links, and undo/redo functionality.
--   **Debounced Autosave**: Both the note title (`TextInput`) and the content (`RichTextEditor`) automatically save changes to the global state (via `UPDATE_NOTE` dispatch) after a short period of inactivity (400ms), preventing excessive updates during typing.
+-   **Debounced Autosave with Visual Feedback**: Both the note title (`TextInput`) and the content (`RichTextEditor`) automatically save changes to the global state (via `UPDATE_NOTE` dispatch) after a short period of inactivity (400ms), preventing excessive updates during typing. A status indicator shows "Saving..." and "Saved" states for clear user feedback.
+-   **Enhanced Keyboard Shortcuts**: Implements and displays common editing shortcuts (Cmd/Ctrl+S for save) with visual indicators, improving discoverability and user productivity.
 -   **State Synchronization**: The editor's local title state and Tiptap's content are reset and synchronized whenever the `selectedNoteId` changes in the global state, ensuring the correct note is displayed and edited.
 -   **Delete Confirmation**: Implements a confirmation modal (`@mantine/modals`) before deleting a note to prevent accidental data loss. Upon confirmation, it dispatches `DELETE_NOTE`, deselects the note (`SELECT_NOTE`), and shows a success notification.
 -   **Metadata Display (Gestalt: Proximity)**: Shows the `createdAt` and `updatedAt` timestamps clearly associated with the currently edited note, positioned logically below the editor using `Stack`.

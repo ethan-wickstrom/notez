@@ -8,6 +8,7 @@ import {
 import { AppContext } from './app-context';
 import { appReducer, initialState } from './app-reducer';
 import { getAllNotes, saveNotes } from '../db/notes-db';
+import { notifications } from '@mantine/notifications';
 
 /**
  * Props for the AppProvider component.
@@ -40,11 +41,27 @@ export function AppProvider({ children }: AppProviderProps): JSX.Element {
         const persisted = await getAllNotes();
         dispatch({ type: 'SET_NOTES', payload: persisted });
       } catch (error: unknown) {
-        // Persisting is best-effort – surface the error to the user but don’t crash
-        dispatch({
-          type: 'SET_ERROR',
-          payload: (error as Error).message,
-        });
+        if (error instanceof Error) {
+          notifications.show({
+            title: 'Error',
+            message: 'Failed to load notes',
+            color: 'red',
+          });
+          dispatch({
+            type: 'SET_ERROR',
+            payload: error.message,
+          });
+        } else {
+          notifications.show({
+            title: 'Error',
+            message: 'Failed to load notes',
+            color: 'red',
+          });
+          dispatch({
+            type: 'SET_ERROR',
+            payload: 'Failed to load notes',
+          });
+        }
       }
     })();
     // Empty dependency array → only run once
@@ -56,8 +73,27 @@ export function AppProvider({ children }: AppProviderProps): JSX.Element {
   useEffect(() => {
     if (state.isLoading) return; // Avoid saving placeholder/loading state
     void saveNotes(state.notes).catch((error: unknown) => {
-      // eslint-disable-next-line no-console
-      console.error('Failed to persist notes', error);
+      if (error instanceof Error) {
+        notifications.show({
+          title: 'Error',
+          message: 'Failed to persist notes',
+          color: 'red',
+        });
+        dispatch({
+          type: 'SET_ERROR',
+          payload: error.message,
+        });
+      } else {
+        notifications.show({
+          title: 'Error',
+          message: 'Failed to persist notes',
+          color: 'red',
+        });
+        dispatch({
+          type: 'SET_ERROR',
+          payload: 'Failed to persist notes',
+        });
+      }
     });
   }, [state.notes, state.isLoading]);
 

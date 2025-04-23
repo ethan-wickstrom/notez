@@ -21,7 +21,7 @@ const root = createRoot(rootElement);
 root.render(
   <StrictMode>
     <MantineProvider theme={theme} defaultColorScheme="dark">
-      <AppProvider> {/* Wrap App with AppProvider */}
+      <AppProvider>
         <App />
       </AppProvider>
     </MantineProvider>

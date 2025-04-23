@@ -29,6 +29,7 @@
     "@tiptap/starter-kit": "^2.11.7",
     "dayjs": "^1.11.13",
     "embla-carousel-react": "^7.1.0",
+    "markdown-wasm": "^1.2.0",
     "postcss": "^8.5.3",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",

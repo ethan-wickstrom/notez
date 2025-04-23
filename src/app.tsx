@@ -2,6 +2,7 @@ import { AppShell, Burger, Group, Text, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Notifications } from '@mantine/notifications'; // Keep Notifications accessible globally
 import { NoteList } from './components/note-list'; // Import the NoteList component
+import { NoteViewer } from './components/note-viewer'; // Import the NoteViewer component
 
 // Main application component
 function App() {
@@ -65,9 +66,8 @@ function App() {
 
         {/* Main Content Area */}
         <AppShell.Main>
-          {/* Placeholder for Note Editor/Viewer */}
-          <Text>Select a note or create a new one.</Text>
-          {/* Example: Render NoteEditor or NoteViewer based on selected note state */}
+          {/* Render the NoteViewer component */}
+          <NoteViewer />
         </AppShell.Main>
       </AppShell>
     </>

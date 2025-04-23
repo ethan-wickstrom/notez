@@ -4,9 +4,10 @@ import { Notifications } from '@mantine/notifications'; // Keep Notifications ac
 import { NoteList } from './components/note-list'; // Import the NoteList component
 import { NoteEditor } from './components/note-editor'; // Import the NoteEditor component
 import { NewNoteButton } from './components/new-note-button'; // Import the NewNoteButton component
+import type { JSX } from 'react'; // Import JSX type
 
 // Main application component
-function App() {
+function App(): JSX.Element {
   // State for controlling the mobile navigation drawer
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   // State for controlling the desktop navigation visibility
@@ -23,7 +24,7 @@ function App() {
           breakpoint: 'sm', // Breakpoint to switch between mobile/desktop views
           collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
         }}
-        padding="md"
+        padding="md" // Consistent padding for the main content area
       >
         {/* App Header */}
         <AppShell.Header>
@@ -34,7 +35,7 @@ function App() {
               onClick={toggleMobile}
               hiddenFrom="sm" // Hide on screens larger than 'sm'
               size="sm"
-              aria-label="Toggle navigation"
+              aria-label="Toggle navigation" // Accessibility label
             />
             {/* Burger for desktop navigation toggle */}
             <Burger
@@ -42,26 +43,31 @@ function App() {
               onClick={toggleDesktop}
               visibleFrom="sm" // Show only on screens 'sm' and larger
               size="sm"
-              aria-label="Toggle navigation"
+              aria-label="Toggle navigation" // Accessibility label
             />
             <Text size="xl" fw={700}>
               Notez
             </Text>
+            {/* Empty div for spacing, ensuring title is centered */}
+            <div style={{ width: 'var(--Burger-size, rem(30px))' }} />
           </Group>
         </AppShell.Header>
 
         {/* App Navigation (Sidebar) */}
         <AppShell.Navbar p="md">
-          {/* Render the NoteList component */}
-          <AppShell.Section grow component={ScrollArea}>
+          {/* Section for the "New Note" button - always visible */}
+          <AppShell.Section>
             <NewNoteButton />
+          </AppShell.Section>
+
+          {/* Section for the NoteList - grows and scrolls */}
+          <AppShell.Section grow component={ScrollArea} mt="md">
             <NoteList />
           </AppShell.Section>
         </AppShell.Navbar>
 
         {/* Main Content Area */}
         <AppShell.Main>
-          {/* Render the NoteEditor component */}
           <NoteEditor />
         </AppShell.Main>
       </AppShell>

@@ -1,4 +1,4 @@
-import { ScrollArea, Skeleton, Stack, Text } from '@mantine/core';
+import { Skeleton, Stack, Text } from '@mantine/core';
 import { useAppContext } from '../state/app-context';
 import { NoteListItem } from './note-list-item';
 import type { JSX } from 'react';
@@ -12,6 +12,7 @@ export function NoteList(): JSX.Element {
   const { notes, isLoading } = state;
 
   if (isLoading) {
+    // Consistent loading state using Skeleton
     return (
       <Stack gap="xs">
         <Skeleton h={28} animate />
@@ -23,20 +24,23 @@ export function NoteList(): JSX.Element {
   }
 
   if (notes.length === 0) {
+    // Improved empty state message
     return (
-      <Text c="dimmed" size="sm" ta="center" mt="md">
-        No notes yet. Create one!
+      <Text c="dimmed" size="sm" ta="center" mt="xl">
+        No notes yet.
+        <br />
+        Click "+ New Note" to create one!
       </Text>
     );
   }
 
+  // Render the list using NoteListItem for each note
   return (
-    <ScrollArea h="100%" type="auto" offsetScrollbars="y">
-      <Stack gap="xs">
-        {notes.map((note) => (
-          <NoteListItem key={note.id} note={note} />
-        ))}
-      </Stack>
-    </ScrollArea>
+    // ScrollArea is handled by the parent AppShell.Section now
+    <Stack gap="xs">
+      {notes.map((note) => (
+        <NoteListItem key={note.id} note={note} />
+      ))}
+    </Stack>
   );
 }

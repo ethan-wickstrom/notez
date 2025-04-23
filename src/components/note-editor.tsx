@@ -13,6 +13,7 @@ import {
   Button,
   Group,
   LoadingOverlay,
+  Stack, // Use Stack for vertical spacing
   Text,
   TextInput,
   rem,
@@ -200,11 +201,11 @@ function NoteEditorInner({ note }: NoteEditorInnerProps): JSX.Element {
 
   // --- Render ---
   return (
-    <Box p="md" pos="relative" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Stack p="md" gap="md" style={{ height: '100%' }}>
       <LoadingOverlay visible={editor == null} />
 
       {/* Title & Delete Button */}
-      <Group mb="sm" align="center" justify="space-between">
+      <Group align="center" justify="space-between" wrap="nowrap" gap="sm">
         <TextInput
           flex={1}
           value={title}
@@ -265,12 +266,12 @@ function NoteEditorInner({ note }: NoteEditorInnerProps): JSX.Element {
 
         {/* Ensure content area grows and scrolls */}
         <RichTextEditor.Content
-          style={{ flexGrow: 1, overflowY: 'auto', minHeight: rem(300) }}
+          style={{ flexGrow: 1, overflowY: 'auto', minHeight: rem(400) }} // Increased minHeight
         />
       </RichTextEditor>
 
       {/* Timestamps */}
-      <Group justify="flex-end" mt="xs">
+      <Group justify="flex-end" gap="sm" mt="xs"> {/* Reduced margin-top */}
         <Text size="xs" c="dimmed">
           Created: {new Date(note.createdAt).toLocaleString()}
         </Text>
@@ -278,7 +279,7 @@ function NoteEditorInner({ note }: NoteEditorInnerProps): JSX.Element {
           Updated: {new Date(note.updatedAt).toLocaleString()}
         </Text>
       </Group>
-    </Box>
+    </Stack>
   );
 }
 
@@ -303,8 +304,21 @@ export function NoteEditor(): JSX.Element {
   // Display placeholder if no note is selected
   if (selectedNote == null) {
     return (
-      <Box p="md" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Text c="dimmed">Select a note to start editing — or create one!</Text>
+      // Use Box with flex properties for centering
+      <Box
+        style={{
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'var(--mantine-spacing-xl)', // Add some padding
+        }}
+      >
+        <Text c="dimmed" ta="center" size="lg">
+          Select a note from the list to view or edit it,
+          <br />
+          or create a new one to get started!
+        </Text>
       </Box>
     );
   }

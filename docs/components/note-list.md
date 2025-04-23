@@ -16,9 +16,9 @@ import { NoteList } from './components/note-list';
 
 -   **State Consumption**: Uses the `useAppContext` hook to access the global application state, specifically the `notes` array and the `isLoading` flag.
 -   **Loading State**: Displays `Skeleton` components as placeholders while the notes are being loaded initially (when `isLoading` is true).
--   **Empty State**: Shows a message ("No notes yet.") if the `notes` array is empty after loading.
+-   **Empty State**: Shows a clear, actionable message ("No notes yet. Click '+ New Note' to create one!") if the `notes` array is empty after loading.
 -   **Rendering List**: Maps over the `notes` array and renders a `NoteListItem` component for each note, passing the `note` object as a prop.
--   **Scrolling**: Wraps the list of notes in Mantine's `ScrollArea` component to ensure the list is scrollable if it exceeds the available vertical space in the navbar.
+-   **Scrolling**: Relies on the parent `AppShell.Section` (configured with `component={ScrollArea}`) to handle scrolling when the list exceeds the available vertical space.
 
 ## API Reference
 
@@ -29,9 +29,10 @@ This component does not accept any props. It derives all necessary data from the
 ## Usage Examples
 
 ```typescript
-// Inside App.tsx
+// Inside App.tsx's Navbar section
 import { AppShell, ScrollArea } from '@mantine/core';
 import { NoteList } from './components/note-list';
+import { NewNoteButton } from './components/new-note-button';
 
 function App() {
   // ... AppShell setup ...
@@ -44,11 +45,14 @@ function App() {
       {/* ... Header ... */}
 
       <AppShell.Navbar p="md">
-         {/* Use AppShell.Section for proper layout within Navbar */}
-         <AppShell.Section grow component={ScrollArea}>
+         {/* Static section */}
+         <AppShell.Section>
+           <NewNoteButton />
+         </AppShell.Section>
+         {/* Scrollable section */}
+         <AppShell.Section grow component={ScrollArea} mt="md">
             <NoteList />
          </AppShell.Section>
-         {/* Potentially add "New Note" button below */}
       </AppShell.Navbar>
 
       {/* ... Main ... */}
@@ -59,8 +63,8 @@ function App() {
 
 ## Best Practices
 
--   Use `AppShell.Section` with the `grow` prop and `component={ScrollArea}` to ensure the `NoteList` correctly fills the available space and becomes scrollable within the `AppShell.Navbar`.
--   Clearly handle the `isLoading` and empty states to provide good user feedback.
+-   Ensure `NoteList` is placed within a scrollable container (like `AppShell.Section` with `component={ScrollArea}`) within the `AppShell.Navbar` for proper layout and scrolling.
+-   Clearly handle the `isLoading` and empty states to provide good user feedback. The empty state message should guide the user on how to proceed.
 -   Delegate the rendering and interaction logic for individual notes to the `NoteListItem` component (Separation of Concerns).
 
 ## Troubleshooting
@@ -77,9 +81,11 @@ function App() {
 -   `src/App.tsx`: The parent component where `NoteList` is integrated into the layout.
 -   `src/state/app-context.ts`: Provides the `useAppContext` hook.
 -   `src/state/app-state.ts`: Defines the structure of the state consumed (`notes`, `isLoading`).
--   `@mantine/core/ScrollArea`: Used for making the list scrollable.
+-   `@mantine/core/ScrollArea`: Used by the parent section for making the list scrollable.
 -   `@mantine/core/Skeleton`: Used for the loading state placeholder.
+-   `@mantine/core/Stack`: Used internally to layout list items.
 
 ## Changelog
 
+-   **2025-04-23**: Improved the empty state message for better user guidance. Removed direct `ScrollArea` usage as it's now handled by the parent `AppShell.Section`.
 -   **2025-04-22**: Initial implementation of the `NoteList` component.

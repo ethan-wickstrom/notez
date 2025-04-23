@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `NoteListItem` component renders a single, selectable item within the `NoteList`. It displays the note's title and handles user interaction to select the note, updating the global application state.
+The `NoteListItem` component renders a single, selectable item within the `NoteList`. It displays the note's title and last updated time, handling user interaction to select the note. It uses a subtle visual style with enhanced active and hover states for improved clarity and user experience in the dark theme.
 
 ## Installation
 
@@ -14,9 +14,11 @@ import { NoteListItem } from './note-list-item';
 
 ## Core Concepts
 
--   **Display**: Uses Mantine's `NavLink` component for consistent styling and interaction patterns within the sidebar. Displays the `note.title` or a placeholder if the title is empty.
+-   **Display**: Uses Mantine's `NavLink` component with `variant="subtle"` for a cleaner appearance. Displays the `note.title` (or "Untitled Note") and a concisely formatted `note.updatedAt` timestamp in the `description` area.
 -   **Selection**: On click, it dispatches the `SELECT_NOTE` action with the note's ID using the `dispatch` function obtained from `useAppContext`.
--   **Active State**: Determines if it's the currently selected note by comparing its `note.id` with the `selectedNoteId` from the global state. Passes the `active` prop to the underlying `NavLink`.
+-   **Active State (Gestalt: Figure/Ground)**: Determines if it's the currently selected note by comparing its `note.id` with the `selectedNoteId` from the global state. Applies distinct background and text styles (using theme primary color with alpha) to the active `NavLink` for clear visual indication.
+-   **Hover State**: Provides subtle background feedback on hover for both active and non-active items, enhancing interactivity.
+-   **Transitions**: Includes a smooth background color transition for hover/active states.
 
 ## API Reference
 
@@ -24,7 +26,7 @@ import { NoteListItem } from './note-list-item';
 
 Props:
 
--   `note` (`Note`): The note object containing the data to display (id, title, etc.). See `docs/types.md`.
+-   `note` (`Note`): The note object containing the data to display (id, title, updatedAt, etc.). See `docs/types.md`.
 
 ## Usage Examples
 
@@ -32,18 +34,17 @@ Props:
 // Inside NoteList.tsx
 import { NoteListItem } from './note-list-item';
 import type { Note } from '../types';
+import { Stack } from '@mantine/core';
 
 function NoteList() {
   // ... (get notes from context) ...
 
   return (
-    <ScrollArea>
-      <Stack>
-        {notes.map((note: Note) => (
-          <NoteListItem key={note.id} note={note} />
-        ))}
-      </Stack>
-    </ScrollArea>
+    <Stack gap="xs">
+      {notes.map((note: Note) => (
+        <NoteListItem key={note.id} note={note} />
+      ))}
+    </Stack>
   );
 }
 ```
@@ -51,14 +52,15 @@ function NoteList() {
 ## Best Practices
 
 -   Keep the `NoteListItem` focused solely on rendering and handling the selection of a single note.
--   Use `NavLink`'s `active` prop for clear visual indication of the selected item.
+-   Utilize the enhanced `active` and `hover` state styling for clear visual feedback.
 -   Provide a fallback label (e.g., "Untitled Note") if a note's title might be empty.
--   Consider adding timestamps (`note.updatedAt`) to the `NavLink`'s `description` prop in the future for better context.
+-   Format timestamps concisely to avoid cluttering the list item.
 
 ## Troubleshooting
 
 -   **Note not selecting**: Verify that the `onClick` handler correctly calls `dispatch` with the `SELECT_NOTE` action and the correct `note.id`. Ensure the `AppProvider` is correctly set up.
--   **Active state incorrect**: Check if `state.selectedNoteId` is being updated correctly in the reducer and that the comparison `state.selectedNoteId === note.id` is accurate.
+-   **Active state incorrect**: Check if `state.selectedNoteId` is being updated correctly in the reducer and that the comparison `state.selectedNoteId === note.id` is accurate. Inspect the styles being applied via `styles` prop in DevTools. Ensure theme primary color is defined correctly.
+-   **Timestamp formatting issues**: Check the `toLocaleTimeString` options or consider using `dayjs` (if added later) for more complex formatting needs.
 
 ## Related Modules
 
@@ -67,7 +69,10 @@ function NoteList() {
 -   `src/state/app-reducer.ts`: Handles the `SELECT_NOTE` action dispatched by this component.
 -   `src/types.ts`: Defines the `Note` type.
 -   `@mantine/core/NavLink`: The Mantine component used for rendering the list item.
+-   `src/theme.ts`: Provides the theme colors used for styling.
 
 ## Changelog
 
+-   **2025-04-23**: Changed `NavLink` variant to `subtle`. Enhanced active/hover state styling using the `styles` prop for better visual distinction and added transitions. Added formatted `updatedAt` timestamp to the description.
 -   **2025-04-22**: Initial implementation of the `NoteListItem` component.
+```

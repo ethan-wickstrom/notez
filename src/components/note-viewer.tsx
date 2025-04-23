@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   LoadingOverlay,
@@ -6,16 +6,11 @@ import {
   Title,
   TypographyStylesProvider,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import type { Note } from '../types';
 import { useAppContext } from '../state/app-context';
 import type { JSX } from 'react';
-import type * as MarkdownWasm from 'markdown-wasm';
-import { notifications } from '@mantine/notifications';
-
-// Dynamically import markdown-wasm
-const loadMarkdownParser = async (): Promise<typeof MarkdownWasm> => {
-  return await import('markdown-wasm');
-};
+import * as Markdown from 'markdown-wasm/dist/markdown.es';
 
 /**
  * Displays the content of the selected note, parsing Markdown to HTML.
@@ -26,7 +21,7 @@ export function NoteViewer(): JSX.Element {
   const [htmlContent, setHtmlContent] = useState<string>('');
   const [isLoadingParser, setIsLoadingParser] = useState<boolean>(true);
   const [isParsing, setIsParsing] = useState<boolean>(false);
-  const parserRef = useRef<typeof MarkdownWasm | null>(null);
+  const [parserLoaded, setParserLoaded] = useState<boolean>(false);
 
   const selectedNote: Note | undefined = notes.find(
     (note) => note.id === selectedNoteId,
@@ -35,26 +30,28 @@ export function NoteViewer(): JSX.Element {
   // Initialize markdown-wasm parser on mount
   useEffect(() => {
     let isMounted = true;
-    void (async () => {
+    (async () => {
       try {
-        const md = await loadMarkdownParser();
+        // Wait for the WASM parser to be ready
+        await Markdown.ready;
         if (isMounted) {
-          parserRef.current = md;
-          setIsLoadingParser(false);
+          setParserLoaded(true);
         }
       } catch (error: unknown) {
         console.error('Failed to load markdown parser:', error);
         if (isMounted) {
-          setIsLoadingParser(false); // Stop loading even on error
           notifications.show({
             title: 'Error',
             message: 'Failed to load markdown parser',
             color: 'red',
           });
         }
+      } finally {
+        if (isMounted) {
+          setIsLoadingParser(false);
+        }
       }
     })();
-
     return () => {
       isMounted = false;
     };
@@ -62,10 +59,10 @@ export function NoteViewer(): JSX.Element {
 
   // Parse markdown when selected note changes or parser is ready
   useEffect(() => {
-    if (selectedNote && parserRef.current && !isLoadingParser) {
+    if (selectedNote && parserLoaded && !isLoadingParser) {
       setIsParsing(true);
       try {
-        const html: string = parserRef.current.parse(selectedNote.content);
+        const html: string = Markdown.parse(selectedNote.content);
         setHtmlContent(html);
       } catch (error: unknown) {
         console.error('Failed to parse markdown:', error);
@@ -81,7 +78,7 @@ export function NoteViewer(): JSX.Element {
     } else if (!selectedNote) {
       setHtmlContent(''); // Clear content if no note is selected
     }
-  }, [selectedNote, isLoadingParser]);
+  }, [selectedNote, parserLoaded, isLoadingParser]);
 
   if (!selectedNoteId || !selectedNote) {
     return (
@@ -105,8 +102,6 @@ export function NoteViewer(): JSX.Element {
       </Title>
       <TypographyStylesProvider>
         {/* Render the parsed HTML */}
-        {/* Using dangerouslySetInnerHTML as markdown-wasm outputs HTML string */}
-        {/* Ensure content is trusted (user's own notes) */}
         <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
       </TypographyStylesProvider>
       <Text size="xs" c="dimmed" mt="xl">

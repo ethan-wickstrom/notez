@@ -3,17 +3,14 @@ import { useDisclosure } from '@mantine/hooks';
 import { Notifications } from '@mantine/notifications'; // Keep Notifications accessible globally
 import { NoteList } from './components/note-list'; // Import the NoteList component
 import { NoteViewer } from './components/note-viewer'; // Import the NoteViewer component
+import { NewNoteButton } from './components/new-note-button'; // Import the NewNoteButton component
 
 // Main application component
 function App() {
   // State for controlling the mobile navigation drawer
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  // State for controlling the desktop navigation visibility (optional, can be always visible)
+  // State for controlling the desktop navigation visibility
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
-
-  // No need to access state directly here anymore, NoteList handles it
-  // const { state } = useAppContext();
-  // const { notes, isLoading } = state;
 
   return (
     <>
@@ -39,7 +36,7 @@ function App() {
               size="sm"
               aria-label="Toggle navigation"
             />
-            {/* Burger for desktop navigation toggle (optional) */}
+            {/* Burger for desktop navigation toggle */}
             <Burger
               opened={desktopOpened}
               onClick={toggleDesktop}
@@ -50,8 +47,6 @@ function App() {
             <Text size="xl" fw={700}>
               Notez
             </Text>
-            {/* Add other header elements like search or user menu here */}
-            <div /> {/* Placeholder to balance justify-content */}
           </Group>
         </AppShell.Header>
 
@@ -59,9 +54,9 @@ function App() {
         <AppShell.Navbar p="md">
           {/* Render the NoteList component */}
           <AppShell.Section grow component={ScrollArea}>
+            <NewNoteButton />
             <NoteList />
           </AppShell.Section>
-          {/* Add "New Note" button here later */}
         </AppShell.Navbar>
 
         {/* Main Content Area */}

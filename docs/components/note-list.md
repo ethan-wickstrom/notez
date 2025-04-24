@@ -18,6 +18,9 @@ import { NoteList } from './components/note-list';
 -   **Loading State**: Displays `Skeleton` components as placeholders while the notes are being loaded initially (when `isLoading` is true).
 -   **Empty State**: Shows a clear, actionable message ("No notes yet. Click '+ New Note' to create one!") if the `notes` array is empty after loading.
 -   **Rendering List**: Maps over the `notes` array and renders a `NoteListItem` component for each note, passing the `note` object as a prop.
+- **Drag-and-Drop Reordering**: Wraps the list with `@hello-pangea/dnd`’s `DragDropContext`, `Droppable`, and
+  `Draggable` components to allow users to change note order via drag-and-drop. The new order is persisted in state with
+  the `REORDER_NOTES` action.
 -   **Scrolling**: Relies on the parent `AppShell.Section` (configured with `component={ScrollArea}`) to handle scrolling when the list exceeds the available vertical space.
 
 ## API Reference
@@ -87,5 +90,7 @@ function App() {
 
 ## Changelog
 
+- **2025-04-23**: Added drag-and-drop functionality for reordering notes. Updated the empty state message to be more
+  user-friendly.
 -   **2025-04-23**: Improved the empty state message for better user guidance. Removed direct `ScrollArea` usage as it's now handled by the parent `AppShell.Section`.
 -   **2025-04-22**: Initial implementation of the `NoteList` component.

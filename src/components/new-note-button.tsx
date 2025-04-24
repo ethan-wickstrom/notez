@@ -1,8 +1,8 @@
-import { Button, Text } from '@mantine/core';
-import { useHotkeys } from '@mantine/hooks';
-import type { JSX } from 'react';
-import type { Note } from '../types';
-import { useAppContext } from '../state/app-context';
+import {Button, Text} from '@mantine/core';
+import {useHotkeys} from '@mantine/hooks';
+import type {JSX} from 'react';
+import type {Note} from '../types';
+import {useAppContext} from '../state/app-context';
 
 /**
  * Button that creates a new, empty note and selects it.
@@ -19,6 +19,7 @@ export function NewNoteButton(): JSX.Element {
       content: '# New Note\n\n',
       createdAt: now,
       updatedAt: now,
+      order: 0,
     };
     dispatch({ type: 'ADD_NOTE', payload: newNote });
     dispatch({ type: 'SELECT_NOTE', payload: newNote.id });

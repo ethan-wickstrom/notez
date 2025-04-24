@@ -26,14 +26,22 @@ export type Note = {
    * ISO 8601 timestamp indicating when the note was last updated.
    */
   updatedAt: string;
+
+  /**
+   * Stable ordering index ­– lower values appear first in the list.
+   */
+  order: number;
 };
 
 /**
- * Represents the data required to create a new note, excluding generated fields like id and timestamps.
+ * Data required to create a new note (generated fields are omitted).
  */
-export type NewNoteData = Omit<Note, 'id' | 'createdAt' | 'updatedAt'>;
+export type NewNoteData = Omit<
+  Note,
+  'id' | 'createdAt' | 'updatedAt' | 'order'
+>;
 
 /**
- * Represents the data required to update an existing note. All fields are optional.
+ * Data accepted when updating an existing note (all optional).
  */
 export type UpdateNoteData = Partial<Omit<Note, 'id' | 'createdAt'>>;

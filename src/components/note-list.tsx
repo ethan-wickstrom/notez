@@ -1,45 +1,40 @@
-import { Skeleton, Stack, Text } from '@mantine/core';
-import { useAppContext } from '../state/app-context';
-import { NoteListItem } from './note-list-item';
-import type { JSX } from 'react';
-import type { Note } from '../types';
+import {Skeleton, Stack, Text} from '@mantine/core';
+import {DragDropContext, Draggable, Droppable, DropResult,} from '@hello-pangea/dnd';
+import {useAppContext} from '../state/app-context';
+import {NoteListItem} from './note-list-item';
+import type {JSX} from 'react';
+import type {Note} from '../types';
 
-/**
- * Filters notes based on search query
- */
-function filterNotes(notes: Note[], searchQuery: string): Note[] {
-  if (!searchQuery.trim()) return notes;
-
-  const query = searchQuery.toLowerCase();
+function filterNotes(notes: readonly Note[], query: string): readonly Note[] {
+  if (!query.trim()) return notes;
+  const q = query.toLowerCase();
   return notes.filter(
-    (note) =>
-      note.title.toLowerCase().includes(query) ||
-      note.content.toLowerCase().includes(query)
+    (n) => n.title.toLowerCase().includes(q) || n.content.toLowerCase().includes(q),
   );
 }
 
-/**
- * Renders the list of notes in the sidebar.
- * Handles loading state and displays notes using NoteListItem.
- */
+function reorder<T>(list: readonly T[], from: number, to: number): T[] {
+  const result = Array.from(list);
+  const [moved] = result.splice(from, 1);
+  result.splice(to, 0, moved);
+  return result;
+}
+
 export function NoteList(): JSX.Element {
-  const { state } = useAppContext();
+  const {state, dispatch} = useAppContext();
   const { notes, isLoading, searchQuery } = state;
 
   if (isLoading) {
-    // Consistent loading state using Skeleton
     return (
       <Stack gap="xs">
-        <Skeleton h={28} animate />
-        <Skeleton h={28} animate />
-        <Skeleton h={28} animate />
-        <Skeleton h={28} animate />
+        {Array.from({length: 4}).map((_, i) => (
+          <Skeleton key={i} h={28} animate/>
+        ))}
       </Stack>
     );
   }
 
   if (notes.length === 0) {
-    // Improved empty state message
     return (
       <Text c="dimmed" size="sm" ta="center" mt="xl">
         No notes yet.
@@ -49,11 +44,9 @@ export function NoteList(): JSX.Element {
     );
   }
 
-  // Filter notes based on search query
-  const filteredNotes = filterNotes(notes, searchQuery);
+  const filtered = filterNotes(notes, searchQuery).toSorted((a, b) => a.order - b.order);
 
-  if (filteredNotes.length === 0) {
-    // No search results message
+  if (filtered.length === 0) {
     return (
       <Text c="dimmed" size="sm" ta="center" mt="xl">
         No notes matching "{searchQuery}".
@@ -63,13 +56,50 @@ export function NoteList(): JSX.Element {
     );
   }
 
-  // Render the filtered list using NoteListItem for each note
+  const onDragEnd = (result: DropResult): void => {
+    if (!result.destination) return;
+    if (result.source.index === result.destination.index) return;
+    const reordered = reorder(filtered, result.source.index, result.destination.index);
+    dispatch({type: 'REORDER_NOTES', payload: reordered.map((n) => n.id)});
+  };
+
+  // Disable DnD while searching to avoid confusion
+  if (searchQuery.trim()) {
+    return (
+      <Stack gap="xs">
+        {filtered.map((n) => (
+          <NoteListItem key={n.id} note={n}/>
+        ))}
+      </Stack>
+    );
+  }
+
   return (
-    // ScrollArea is handled by the parent AppShell.Section now
-    <Stack gap="xs">
-      {filteredNotes.map((note) => (
-        <NoteListItem key={note.id} note={note} />
-      ))}
-    </Stack>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="notes">
+        {(dropProvided) => (
+          <Stack
+            gap="xs"
+            ref={dropProvided.innerRef}
+            {...dropProvided.droppableProps}
+          >
+            {filtered.map((note, index) => (
+              <Draggable key={note.id} draggableId={note.id} index={index}>
+                {(dragProvided) => (
+                  <div
+                    ref={dragProvided.innerRef}
+                    {...dragProvided.draggableProps}
+                    {...dragProvided.dragHandleProps}
+                  >
+                    <NoteListItem note={note}/>
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {dropProvided.placeholder}
+          </Stack>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 }

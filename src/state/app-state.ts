@@ -1,4 +1,4 @@
-import type { Note } from '../types';
+import type {Note} from '../types';
 
 /**
  * Defines the overall shape of the application's state.
@@ -41,4 +41,5 @@ export type AppAction =
   | { type: 'SELECT_NOTE'; payload: string | null } // Set the currently selected note ID
   | { type: 'SET_LOADING'; payload: boolean } // Set the loading state
   | { type: 'SET_ERROR'; payload: string | null } // Set or clear the error state
-  | { type: 'SET_SEARCH_QUERY'; payload: string }; // Set the current search query
+  | { type: 'SET_SEARCH_QUERY'; payload: string } // Set the current search query
+  | { type: 'REORDER_NOTES'; payload: string[] }; // Reorder notes by array of ids

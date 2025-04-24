@@ -1,4 +1,4 @@
-import type { AppAction, AppState } from './app-state';
+import type {AppAction, AppState} from './app-state';
 
 /**
  * The initial state for the application when it first loads.
@@ -6,92 +6,88 @@ import type { AppAction, AppState } from './app-state';
 export const initialState: AppState = {
   notes: [],
   selectedNoteId: null,
-  isLoading: true, // Assume loading initially until data is fetched
+  isLoading: true,
   error: null,
-  searchQuery: '', // Initialize with empty search query
+  searchQuery: '',
 };
 
-/**
- * The main reducer function for managing the application's state.
- * It takes the current state and an action, and returns the new state.
- *
- * @param state - The current application state.
- * @param action - The action dispatched to update the state.
- * @returns The new application state after applying the action.
- */
+/** Ensure every loaded note has an order and sort ascending */
+function normalizeNotes(raw: ReadonlyArray<AppState['notes'][number]>): AppState['notes'] {
+  return raw
+    .map((n, idx) => ({...n, order: (n as { order?: number }).order ?? idx}))
+    .sort((a, b) => a.order - b.order);
+}
+
+/** Re-index contiguous order after mutations */
+function renumber(notes: AppState['notes']): AppState['notes'] {
+  return notes.map((n, i) => ({...n, order: i}));
+}
+
 export function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'SET_NOTES':
-      // Replace the entire notes array. Often used after initial load.
       return {
         ...state,
-        notes: action.payload,
-        isLoading: false, // Assume loading is finished when notes are set
-        error: null, // Clear any previous errors
+        notes: normalizeNotes(action.payload),
+        isLoading: false,
+        error: null,
       };
 
-    case 'ADD_NOTE':
-      // Add a new note to the beginning of the array for visibility.
+    case 'ADD_NOTE': {
+      const shifted = state.notes.map((n) => ({...n, order: n.order + 1}));
       return {
         ...state,
-        notes: [action.payload, ...state.notes],
+        notes: renumber([{...action.payload, order: 0}, ...shifted]),
       };
+    }
 
     case 'UPDATE_NOTE': {
-      // Find the note by ID and update its properties, including updatedAt.
       const now = new Date().toISOString();
       return {
         ...state,
-        notes: state.notes.map((note) =>
-          note.id === action.payload.id
-            ? { ...note, ...action.payload.data, updatedAt: now } // Always update timestamp
-            : note,
+        notes: state.notes.map((n) =>
+          n.id === action.payload.id
+            ? {...n, ...action.payload.data, updatedAt: now}
+            : n,
         ),
       };
     }
 
-    case 'DELETE_NOTE':
-      // Filter out the note with the specified ID.
+    case 'DELETE_NOTE': {
+      const remaining = state.notes.filter((n) => n.id !== action.payload);
       return {
         ...state,
-        notes: state.notes.filter((note) => note.id !== action.payload),
-        // If the deleted note was selected, deselect it.
+        notes: renumber(remaining),
         selectedNoteId:
-          state.selectedNoteId === action.payload
-            ? null
-            : state.selectedNoteId,
+          state.selectedNoteId === action.payload ? null : state.selectedNoteId,
       };
+    }
+
+    case 'REORDER_NOTES': {
+      const lookup = new Map(action.payload.map((id, i) => [id, i]));
+      return {
+        ...state,
+        notes: renumber(
+          state.notes
+            .map((n) => ({...n, order: lookup.get(n.id) ?? n.order}))
+            .sort((a, b) => a.order - b.order),
+        ),
+      };
+    }
 
     case 'SELECT_NOTE':
-      // Set the ID of the currently selected note.
-      return {
-        ...state,
-        selectedNoteId: action.payload,
-      };
+      return {...state, selectedNoteId: action.payload};
 
     case 'SET_LOADING':
-      // Update the loading status.
-      return {
-        ...state,
-        isLoading: action.payload,
-      };
+      return {...state, isLoading: action.payload};
+
     case 'SET_ERROR':
-      // Set or clear the error message.
-      return {
-        ...state,
-        error: action.payload,
-        isLoading: false, // Assume loading stops if an error occurs
-      };
+      return {...state, error: action.payload, isLoading: false};
+
     case 'SET_SEARCH_QUERY':
-      // Update the search query for filtering notes
-      return {
-        ...state,
-        searchQuery: action.payload,
-      };
+      return {...state, searchQuery: action.payload};
+
     default:
-      // For unhandled actions, return the current state unchanged.
-      // This satisfies TypeScript's exhaustiveness check if AppAction is a discriminated union.
-      return state;
       return state;
   }
 }

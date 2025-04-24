@@ -31,6 +31,7 @@ Properties:
 -   `content` (string): The main content of the note in Github Flavored Markdown format.
 -   `createdAt` (string): ISO 8601 timestamp string indicating when the note was created.
 -   `updatedAt` (string): ISO 8601 timestamp string indicating when the note was last updated.
+- `order` (number): Sorting index used for manual note re-ordering. Lower values appear earlier in the list.
 
 ### Type: `NewNoteData`
 
